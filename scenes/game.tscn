@@ -198,16 +198,16 @@ max_polyphony = 2
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=596407928]
 unique_name_in_owner = true
 
+[node name="SL1600" type="Sprite2D" parent="." unique_id=1652434741]
+position = Vector2(325, 255.99998)
+scale = Vector2(0.39213657, 0.3858004)
+texture = ExtResource("11_kvpfn")
+
 [node name="Maze" type="TileMapLayer" parent="." unique_id=691061561]
 unique_name_in_owner = true
 visible = false
 tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAD//wAAAAABAAAAAAABAAAAAAABAAAAAAD+/wAAAAABAAAAAAD+////AAABAAAAAAD+//7/AAABAAAAAAD///7/AAABAAAAAAAAAP7/AAABAAAAAAABAP7/AAABAAAAAAABAP//AAABAAAAAAACAP//AAABAAAAAAD9////AAABAAAAAAADAP//AAADAAAAAAD8////AAADAAAAAAD+//3/AAABAAAAAAD+//z/AAABAAAAAAD+//v/AAABAAAAAAD9//v/AAABAAAAAAD8//v/AAABAAAAAAD8//z/AAACAAAAAAD8//3/AAABAAAAAAD9//3/AAABAAAAAAD///z/AAABAAAAAAAAAPz/AAABAAAAAAABAPz/AAABAAAAAAABAP3/AAABAAAAAAACAPv/AAABAAAAAAABAPv/AAABAAAAAAADAPv/AAABAAAAAAADAPz/AAACAAAAAAADAP3/AAABAAAAAAACAP3/AAABAAAAAAD+/wEAAAABAAAAAAD+/wIAAAABAAAAAAD9/wEAAAABAAAAAAD8/wEAAAABAAAAAAD8/wIAAAACAAAAAAD8/wMAAAABAAAAAAD9/wMAAAABAAAAAAD+/wMAAAABAAAAAAD//wMAAAABAAAAAAAAAAMAAAABAAAAAAABAAMAAAABAAAAAAACAAMAAAABAAAAAAADAAIAAAACAAAAAAADAAMAAAABAAAAAAADAAEAAAABAAAAAAACAAEAAAABAAAAAAABAAEAAAABAAAAAAABAAIAAAABAAAAAAA=")
 tile_set = SubResource("TileSet_kvpfn")
-
-[node name="SL1600" type="Sprite2D" parent="." unique_id=1652434741]
-position = Vector2(325, 255.99998)
-scale = Vector2(0.39213657, 0.3858004)
-texture = ExtResource("11_kvpfn")
 
 [connection signal="submit_cmd" from="VBoxContainer/HBoxContainer/Prompt" to="." method="_on_prompt_submit_cmd"]
 [connection signal="text_changed" from="VBoxContainer/HBoxContainer/Prompt" to="VBoxContainer/HBoxContainer/Prompt" method="_on_text_changed"]

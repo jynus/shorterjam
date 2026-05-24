@@ -22,22 +22,38 @@ var start_time: float
 var seconds_left: float
 var score: int = 0
 var dead: bool = false
+var won: bool = false
 var current_location_was_new: bool = true
+enum ghost_state {SCATTER, CHASING, FRIGHTENED, DEAD}
+var monsters: Array [Dictionary] = [
+	{"color": "red", "name": "Kyln-Ib", "nick": "the red death", "state": ghost_state.SCATTER, "pos": Vector2i(-4, -5)},
+	{"color": "pink", "name": "Kyp'ni", "nick": "the poisonous one", "state": ghost_state.SCATTER, "pos": Vector2i(3, -5)},
+	{"color": "cyan", "name": "Nyik", "nick": "the wise", "state": ghost_state.SCATTER, "pos": Vector2i(-4, 1)},
+	{"color": "orange", "name": "Dy'lec", "nick": "the doubtful", "state": ghost_state.SCATTER, "pos": Vector2i(3, 1)},
+]
+var alive_monsters : int = len(monsters)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	restart_game()
-
-func restart_game() -> void:
 	computer_sound.play()
-	start_time = Time.get_unix_time_from_system()
+	start_time = Time.get_unix_time_from_system()	
 	text.text = get_start_text()
 	text.text += update_seconds_left()	
 	prompt.grab_focus.call_deferred()
 	inventory = ["letter"]
 	score = 0
+	randomize_monster_position()
+	#for m in monsters:
+	#	print_debug(m.pos)
 	dead = false
-	var color : Color = Color("#5b3943")
+
+func restart_game():
+	get_tree().reload_current_scene()
+
+func randomize_monster_position():
+	for m in monsters:
+		if randf() > 0.5:
+			m.pos += Vector2i(0, 2)
 
 func error_beep():
 	beep_error.play()
@@ -71,12 +87,42 @@ Commands:
  * [b]use[/b] <item>: Uses item from inventory, if available
  * [b]inventory[/b]: List items available in your inventory
  * [b]restart[/b]: Restarts & resets the timer to try again
+
+Copyright (c) Iota Urn-Wait 1978
 """
+func use_orb() -> String:
+	var checking_tile_location : Vector2i
+	var possible_ways: Array[String] = get_possible_ways()
+	var killed_monsters: bool = false
+	var description : String = ""
+	for w in possible_ways:
+		checking_tile_location = maze_location + directions[w]
+		var monsters_at_location: Array[Dictionary] = list_monsters_at(checking_tile_location)
+		for m in monsters_at_location:
+			if m.state == ghost_state.DEAD:  # it cannot kill a dead ghost
+				continue
+			description += "The " + m.color + " demon " + m.name + ", " + \
+						   m.nick + ", DIES due to the energy " + \
+			               "of your ORB while shouting waka-waka!\n"
+			m.state = ghost_state.DEAD
+			alive_monsters -= 1
+			killed_monsters = true
+	if not killed_monsters:
+		description = "You cannot use your ORB here, there are no monsters nearby."
+	else:
+		if alive_monsters <= 0:
+			text.text = description
+			win()
+			return ""
+		inventory.erase("orb")
+		description += "Your orb gets consumed after usage. You have " + \
+						str(inventory.count("orb")) + " orb(s) left."
+	return description
 
 func read_letter() -> String:
 	return """
 Dear player,
-I trapped you in my ever-changing maze (buah, ha ha)!
+I trapped you in my impossible maze (buah, ha ha)!
 The only way to exit is by finding the 4 secret orbs
 of power and use them against the 4 undead demons
 that hide in this terrible maze:
@@ -104,6 +150,8 @@ func use_item(cmd: String) -> String:
 
 	if item == "letter":
 		return read_letter()
+	elif item == "orb":
+		return use_orb()
 	else:
 		error_beep()
 		return "You cannot use " + item + " here."
@@ -135,10 +183,40 @@ func list_inventory() -> String:
 		output += ("* " + item + "\n")
 	return output
 
-func die() -> void:
+func die(monsters_that_killed_you: Array[Dictionary] = []) -> void:
 	dead = true
-	text.text = "You have DIED of madness, type 'restart' to try again."
+	if len(monsters_that_killed_you) == 0:
+		text.text = "You ran out of time, and DIED of madness."
+	elif len(monsters_that_killed_you) == 1:
+		var m = monsters_that_killed_you[0]
+		text.text = "The demon known as " + m.name + \
+					" ate your guts, and you DIED in pain while its disgusting " + \
+					m.color + " saliva fully covered your remains."
+	else:
+		text.text = "The demons known as " + " and ".join(monsters_that_killed_you) + \
+		            "commence to eat your guts, and you DIE among a multi-color frency."
+	text.text += "\n\nType 'restart' to try again."
 	music.stream = LOSE_SOUND
+	music.play()
+
+func win():
+	won = true
+	text.text += """
+CONGRATULATIONS, you WON! You successfully navigated
+my maze and used your witts to defeat the 4 deamons
+with the orbs of power:
+
+ * Kyln-Ib, the read death (also known as Blinky)
+ * Kyp'ni, the poisonous one (also known as Pinky)
+ * Nyik, the wise (also known as Inky)
+ * Dy'lec, the doubtful (also known as Clyde)
+
+You have demonstrated being the ultimate
+
+             MAN of the PAC!
+"""
+	text.text += "\n\nType 'restart' to try again."
+	music.stream = WIN_SOUND
 	music.play()
 
 func calculate_seconds_left() -> void:
@@ -176,6 +254,12 @@ func get_tile(location: Vector2i) -> cell_type:
 	else:
 		return cell_type.WALL
 
+func list_monsters_at(pos: Vector2i) -> Array[Dictionary]:
+	var monster_list: Array[Dictionary] = []
+	for m in monsters:
+		if m.pos == pos:
+			monster_list.append(m)
+	return monster_list
 
 func describe_location() -> String:
 	var description : String = ""
@@ -188,10 +272,30 @@ func describe_location() -> String:
 	elif location == cell_type.ORB:
 		description += "You find a giant ORB levitating 2 feet above the ground.\n"
 
+	for m in list_monsters_at(maze_location):
+		if m.state == ghost_state.DEAD:
+			description += "You find the disgusting " + m.color + \
+						   " remains of the dead deamon " + m.name + " here.\n"
+
 	var possible_ways : Array[String] = get_possible_ways()
+	var checking_tile_location : Vector2i
+	var monster_list: Array[Dictionary] = []
+	
+	# check current location for dead bodies
+	# Check surroundings
 	for w in possible_ways:
-		if get_tile(maze_location + directions[w]) == cell_type.ORB:
+		checking_tile_location = maze_location + directions[w]
+		var monsters_at_location: Array[Dictionary] = list_monsters_at(checking_tile_location)
+		for m in monsters_at_location:
+			if m.state not in [ghost_state.DEAD]: # Ingore ghost's dead bodies
+				description += "A terrible " + m.color + " DEMON is just to your " + w + "!\n"
+				monster_list.append(m)
+
+		if get_tile(checking_tile_location) == cell_type.ORB:
 			description += "You can see a bright light coming from the " + w + ".\n"
+	if len(monster_list) == 0:
+		description += "There are no enemies in view.\n"
+
 	if len(possible_ways) == 0:
 		description += "You are trapped, there are no exits from here"
 	elif len(possible_ways) == 1:
@@ -205,7 +309,23 @@ func move(dir: String) -> String:
 	if dir in possible_ways:
 		maze_location += directions[dir]
 		current_location_was_new = false if get_tile(maze_location) == cell_type.EMPTY else true
-		return "You move towards the " + dir + ".\n\n" + describe_location()
+		# Was there a monster there?
+		var monster_alive_list: Array[Dictionary] = []
+		var monster_list: Array[Dictionary] = list_monsters_at(maze_location)
+		for m in monster_list:
+			if m.state != ghost_state.DEAD:
+				monster_alive_list.append(m)
+
+		if len(monster_alive_list) > 0:
+			die(monster_alive_list)
+			return ""
+		if get_tile(maze_location) == cell_type.TELEPORT:  # teleport hack
+			maze_location = maze_location + Vector2i(6, 0) if maze_location.x < 0 else maze_location - Vector2i(6, 0)
+			return "You move towards the " + dir + ".\n\n" + \
+				   "You feel a chill when you arrive at this place, and a slight dizziness.\n" + \
+				   describe_location()
+		else:
+			return "You move towards the " + dir + ".\n\n" + describe_location()
 	else:
 		error_beep()
 		return "You cannot move towards " + dir + ", that direction is blocked.\nYour possible directions are: " + list_possible_ways() + "."
@@ -217,8 +337,11 @@ func _on_prompt_submit_cmd(cmd: String) -> void:
 		error_beep()
 		text.text = "YOU ARE DEAD, you cannot do that. Type 'restart' to start a new game."
 		return
+	elif won and not cmd.begins_with("h") and not cmd.begins_with('r'):
+		error_beep()
+		text.text = "YOU ALREADY WON, you cannot do that. Type 'restart' to start a new game."
 
-	if not dead:
+	if not dead and not won:
 		text.text += update_seconds_left()
 		if seconds_left <= 0.0:
 			die()
