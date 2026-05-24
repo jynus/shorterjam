@@ -139,7 +139,7 @@ that hide in this terrible maze:
 
 Good luck, adventurer, alas, be quick, as my patience
 is low: spend more than 5 minutes wandering on my
-maze you will go mad and die, joining my horde of
+maze and you will go mad and die, joining my horde of
 undead slaves!
 """
 
@@ -173,7 +173,7 @@ func take_item(cmd: String):
 		inventory.append("orb")
 		music.stream = PICKUP
 		music.play()
-		return "You carefully take an ORB or power and put it in your pocket.\n"
+		return "You carefully take an ORB of power and put it in your pocket.\n"
 	else:
 		error_beep()
 		return "There is no " + item + " to take here!\n"
