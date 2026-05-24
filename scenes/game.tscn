@@ -1,0 +1,214 @@
+[gd_scene format=4 uid="uid://bv0cuxy8glvep"]
+
+[ext_resource type="Script" uid="uid://yk1imq67ykjm" path="res://scripts/game.gd" id="1_u5sy4"]
+[ext_resource type="Shader" uid="uid://61yaensi1gtx" path="res://shaders/crt.gdshader" id="1_uwrxv"]
+[ext_resource type="FontFile" uid="uid://coqutubfrsubx" path="res://clacon2.ttf" id="2_lnu2h"]
+[ext_resource type="Texture2D" uid="uid://b50scmvnwpwsu" path="res://textures/seamless-rgb-pixel-pattern-repeating-crt-screen-background-lcd-display-dots-wallpaper-red-green-blue-pixels-monitor-texture-repeated-led-backdrop-vector.jpg" id="2_vtaks"]
+[ext_resource type="Script" uid="uid://bus4uqxc5y82b" path="res://scripts/prompt.gd" id="3_iywne"]
+[ext_resource type="AudioStream" uid="uid://dtxxs2gk53fp1" path="res://sounds/freesound_community-keyboard5-88069.mp3" id="5_p57ef"]
+[ext_resource type="AudioStream" uid="uid://cfslye68dhf4w" path="res://sounds/dragon-studio-single-key-press-393908.mp3" id="6_vtaks"]
+[ext_resource type="AudioStream" uid="uid://pmectskywbm8" path="res://sounds/freesound_community-noisy-computer-hum-34737.mp3" id="7_gee14"]
+[ext_resource type="AudioStream" uid="uid://cj7s7lqgcsgc" path="res://sounds/beep_error.wav" id="8_vtaks"]
+[ext_resource type="Texture2D" uid="uid://l0g486t4txhx" path="res://textures/grid.webp" id="9_0tnpc"]
+[ext_resource type="Texture2D" uid="uid://c54havoarfemy" path="res://textures/s-l1600.png" id="11_kvpfn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lnu2h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yqjtg"]
+shader = ExtResource("1_uwrxv")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.2570000122075
+shader_parameter/scanlines_width = 0.190000009025
+shader_parameter/grille_opacity = 0.12400000589
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/pixelate = false
+shader_parameter/roll = true
+shader_parameter/roll_speed = 0.4
+shader_parameter/roll_size = 3.0000001425
+shader_parameter/roll_variation = 0.93800004129512
+shader_parameter/distort_intensity = 0.05
+shader_parameter/noise_opacity = 0.31200001482
+shader_parameter/noise_speed = 5.0
+shader_parameter/static_noise_intensity = 0.06
+shader_parameter/aberration = 0.01500004821249989
+shader_parameter/brightness = 1.4
+shader_parameter/discolor = true
+shader_parameter/warp_amount = 0.6150000292125
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
+
+[sub_resource type="Gradient" id="Gradient_lnu2h"]
+offsets = PackedFloat32Array(0, 0.006024096)
+colors = PackedColorArray(0, 0, 0, 1, 0.03529412, 0.03529412, 0.03529412, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lbhrr"]
+gradient = SubResource("Gradient_lnu2h")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vtaks"]
+texture = ExtResource("9_0tnpc")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_kvpfn"]
+sources/0 = SubResource("TileSetAtlasSource_vtaks")
+
+[node name="Game" type="Node2D" unique_id=1903809390]
+script = ExtResource("1_u5sy4")
+
+[node name="ScreenBackground" type="TextureRect" parent="." unique_id=982038611]
+self_modulate = Color(0.10374347, 0.103743546, 0.103743516, 1)
+custom_minimum_size = Vector2(640, 480)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 32200.0
+offset_bottom = 24050.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.02, 0.02)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("2_vtaks")
+stretch_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=340874276]
+offset_left = 58.0
+offset_top = 39.0
+offset_right = 588.0
+offset_bottom = 447.0
+theme_override_constants/separation = 0
+metadata/_edit_lock_ = true
+
+[node name="Text" type="RichTextLabel" parent="VBoxContainer" unique_id=1048871232]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0, 1, 0, 1)
+theme_override_fonts/normal_font = ExtResource("2_lnu2h")
+theme_override_fonts/bold_font = ExtResource("2_lnu2h")
+theme_override_fonts/bold_italics_font = ExtResource("2_lnu2h")
+theme_override_fonts/italics_font = ExtResource("2_lnu2h")
+theme_override_fonts/mono_font = ExtResource("2_lnu2h")
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lnu2h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lnu2h")
+bbcode_enabled = true
+text = "LOADING MAZE.EXE, PLEASE WAIT ..."
+shortcut_keys_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1882305662]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="PromptStart" type="LineEdit" parent="VBoxContainer/HBoxContainer" unique_id=768807006]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(10, 10)
+custom_maximum_size = Vector2(10, -1)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_uneditable_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lnu2h")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_lnu2h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lnu2h")
+text = ">"
+editable = false
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+flat = true
+virtual_keyboard_enabled = false
+caret_blink = true
+script = ExtResource("3_iywne")
+
+[node name="Prompt" type="LineEdit" parent="VBoxContainer/HBoxContainer" unique_id=1927619844 node_paths=PackedStringArray("key_sound", "intro_sound")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/caret_color = Color(0, 1, 0, 1)
+theme_override_constants/caret_width = 2
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lnu2h")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_lnu2h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lnu2h")
+max_length = 80
+keep_editing_on_text_submit = true
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+flat = true
+virtual_keyboard_enabled = false
+caret_blink = true
+caret_force_displayed = true
+script = ExtResource("3_iywne")
+key_sound = NodePath("KeySound")
+intro_sound = NodePath("IntroSound")
+
+[node name="KeySound" type="AudioStreamPlayer" parent="VBoxContainer/HBoxContainer/Prompt" unique_id=1790392474]
+stream = ExtResource("5_p57ef")
+max_polyphony = 5
+bus = &"SFX"
+
+[node name="IntroSound" type="AudioStreamPlayer" parent="VBoxContainer/HBoxContainer/Prompt" unique_id=338251240]
+stream = ExtResource("6_vtaks")
+max_polyphony = 2
+bus = &"SFX"
+
+[node name="Background" type="Sprite2D" parent="." unique_id=837923911]
+material = SubResource("ShaderMaterial_yqjtg")
+scale = Vector2(2.5117185, 479.00006)
+texture = SubResource("GradientTexture1D_lbhrr")
+centered = false
+metadata/_edit_lock_ = true
+
+[node name="BeepError" type="AudioStreamPlayer" parent="." unique_id=1202717016]
+unique_name_in_owner = true
+stream = ExtResource("8_vtaks")
+bus = &"SFX"
+
+[node name="ComputerSound" type="AudioStreamPlayer" parent="." unique_id=602263293]
+unique_name_in_owner = true
+stream = ExtResource("7_gee14")
+volume_db = -6.0
+max_polyphony = 2
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=596407928]
+unique_name_in_owner = true
+
+[node name="Maze" type="TileMapLayer" parent="." unique_id=691061561]
+unique_name_in_owner = true
+visible = false
+tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAD//wAAAAABAAAAAAABAAAAAAABAAAAAAD+/wAAAAABAAAAAAD+////AAABAAAAAAD+//7/AAABAAAAAAD///7/AAABAAAAAAAAAP7/AAABAAAAAAABAP7/AAABAAAAAAABAP//AAABAAAAAAACAP//AAABAAAAAAD9////AAABAAAAAAADAP//AAADAAAAAAD8////AAADAAAAAAD+//3/AAABAAAAAAD+//z/AAABAAAAAAD+//v/AAABAAAAAAD9//v/AAABAAAAAAD8//v/AAABAAAAAAD8//z/AAACAAAAAAD8//3/AAABAAAAAAD9//3/AAABAAAAAAD///z/AAABAAAAAAAAAPz/AAABAAAAAAABAPz/AAABAAAAAAABAP3/AAABAAAAAAACAPv/AAABAAAAAAABAPv/AAABAAAAAAADAPv/AAABAAAAAAADAPz/AAACAAAAAAADAP3/AAABAAAAAAACAP3/AAABAAAAAAD+/wEAAAABAAAAAAD+/wIAAAABAAAAAAD9/wEAAAABAAAAAAD8/wEAAAABAAAAAAD8/wIAAAACAAAAAAD8/wMAAAABAAAAAAD9/wMAAAABAAAAAAD+/wMAAAABAAAAAAD//wMAAAABAAAAAAAAAAMAAAABAAAAAAABAAMAAAABAAAAAAACAAMAAAABAAAAAAADAAIAAAACAAAAAAADAAMAAAABAAAAAAADAAEAAAABAAAAAAACAAEAAAABAAAAAAABAAEAAAABAAAAAAABAAIAAAABAAAAAAA=")
+tile_set = SubResource("TileSet_kvpfn")
+
+[node name="SL1600" type="Sprite2D" parent="." unique_id=1652434741]
+position = Vector2(325, 255.99998)
+scale = Vector2(0.39213657, 0.3858004)
+texture = ExtResource("11_kvpfn")
+
+[connection signal="submit_cmd" from="VBoxContainer/HBoxContainer/Prompt" to="." method="_on_prompt_submit_cmd"]
+[connection signal="text_changed" from="VBoxContainer/HBoxContainer/Prompt" to="VBoxContainer/HBoxContainer/Prompt" method="_on_text_changed"]
+[connection signal="text_submitted" from="VBoxContainer/HBoxContainer/Prompt" to="VBoxContainer/HBoxContainer/Prompt" method="_on_text_submitted"]
