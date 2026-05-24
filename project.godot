@@ -31,6 +31,10 @@ window/size/window_width_override=1026
 window/size/window_height_override=684
 window/stretch/mode="viewport"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/custom-html-loader/plugin.cfg")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
