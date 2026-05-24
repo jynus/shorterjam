@@ -194,9 +194,11 @@ unique_name_in_owner = true
 stream = ExtResource("7_gee14")
 volume_db = -6.0
 max_polyphony = 2
+bus = &"SFX"
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=596407928]
 unique_name_in_owner = true
+bus = &"Music"
 
 [node name="SL1600" type="Sprite2D" parent="." unique_id=1652434741]
 position = Vector2(325, 255.99998)

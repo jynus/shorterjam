@@ -8,6 +8,9 @@ extends Node2D
 
 const WIN_SOUND = preload("uid://cig5v6bgp454a")
 const LOSE_SOUND = preload("uid://c84u4ro5vrdo6")
+const POWERUP = preload("uid://dhwiwl1vnbbsp")
+const PICKUP = preload("uid://beded85y1pfcr")
+
 const directions: Dictionary = {
 	"north": Vector2i.UP,
 	"east": Vector2i.RIGHT,
@@ -47,6 +50,19 @@ func _ready() -> void:
 	#	print_debug(m.pos)
 	dead = false
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_just_pressed("fullscreen"):
+		toggle_fullscreen()
+
+func toggle_fullscreen() -> void:
+	if DisplayServer.window_get_mode() in [
+		DisplayServer.WINDOW_MODE_FULLSCREEN,
+		DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+	]:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
 func restart_game():
 	get_tree().reload_current_scene()
 
@@ -82,7 +98,7 @@ Commands:
  * [b]south[/b]: Goes down one step
  * [b]west[/b]: Goes right one step
  * [b]east[/b]: Goes left one step
- * [b]describe[/d]: Describes the current location
+ * [b]describe[/b]: Describes the current location
  * [b]take[/b] <item>: Adds item to inventory, if available
  * [b]use[/b] <item>: Uses item from inventory, if available
  * [b]inventory[/b]: List items available in your inventory
@@ -103,7 +119,7 @@ func use_orb() -> String:
 				continue
 			description += "The " + m.color + " demon " + m.name + ", " + \
 						   m.nick + ", DIES due to the energy " + \
-			               "of your ORB while shouting waka-waka!\n"
+			               "of your ORB while shouting waka-waka!\n\n"
 			m.state = ghost_state.DEAD
 			alive_monsters -= 1
 			killed_monsters = true
@@ -117,6 +133,8 @@ func use_orb() -> String:
 		inventory.erase("orb")
 		description += "Your orb gets consumed after usage. You have " + \
 						str(inventory.count("orb")) + " orb(s) left."
+		music.stream = POWERUP
+		music.play()
 	return description
 
 func read_letter() -> String:
@@ -166,6 +184,8 @@ func take_item(cmd: String):
 	if item == "orb" and get_tile(maze_location) == cell_type.ORB:
 		maze.set_cell(maze_location, 0, Vector2(0, 0))
 		inventory.append("orb")
+		music.stream = PICKUP
+		music.play()
 		return "You carefully take an ORB or power and put it in your pocket.\n"
 	else:
 		error_beep()
